@@ -1,83 +1,239 @@
-import { Chessboard } from "react-chessboard";
+import { Chessboard } from 'react-chessboard';
 
+export default function ChessWorksheet({
+  puzzles,
+  pageName,
+  pageNumber
+}) {
+  const squareStyles = {};
 
-export default function ChessWorksheet({ puzzles, pageName, pageNumber }) {
-    var squareStyles = {};
+  const lightSquare = 'rgb(255,255,255)';
+  const darkSquare = 'rgb(200, 200, 200)';
 
+  let fileColor = false;
 
-    const lightSquare = 'rgb(255,255,255)';
-    const darkSquare = 'rgb(200, 200, 200)';
+  for (let fileASCII = 97; fileASCII <= 104; fileASCII++) {
+    fileColor = !fileColor;
 
-    var fileColor = false;
-    for (var fileASCII = 97; fileASCII <= 104; fileASCII++) {
-        fileColor = !fileColor;
+    let rankColor = fileColor;
 
-        var rankColor = fileColor;
-        for (var rankASCII = 49; rankASCII <= 56; rankASCII++) {
-            rankColor = !rankColor
-            squareStyles[String.fromCharCode(fileASCII) + String.fromCharCode(rankASCII)] = {
-                backgroundColor: rankColor ? lightSquare : darkSquare
-            };
-        }
+    for (let rankASCII = 49; rankASCII <= 56; rankASCII++) {
+      rankColor = !rankColor;
+
+      squareStyles[
+        String.fromCharCode(fileASCII) +
+          String.fromCharCode(rankASCII)
+      ] = {
+        backgroundColor: rankColor
+          ? lightSquare
+          : darkSquare
+      };
     }
+  }
 
-    const hollowTriangle = <svg className="w-4 h-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <polygon className="fill-transparent stroke-black stroke-[4px]"
-            points="50,5 95,95 5,95" />
+  const hollowTriangle = (
+    <svg
+      style={{
+        width: '0.17in',
+        height: '0.17in'
+      }}
+      viewBox="0 0 100 100"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <polygon
+        fill="transparent"
+        stroke="black"
+        strokeWidth="4"
+        points="50,5 95,95 5,95"
+      />
     </svg>
+  );
 
-    const filledTriangle = <svg className="w-4 h-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <polygon className="fill-black stroke-black stroke-[4px]"
-            points="50,5 95,95 5,95" />
+  const filledTriangle = (
+    <svg
+      style={{
+        width: '0.17in',
+        height: '0.17in'
+      }}
+      viewBox="0 0 100 100"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <polygon
+        fill="black"
+        stroke="black"
+        strokeWidth="4"
+        points="50,5 95,95 5,95"
+      />
     </svg>
+  );
 
-    return (
-        <div className="p-8 flex flex-col items-center bg-gray-100 min-h-screen print:bg-white 
-        print:p-0 print:pt-10 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]">
+  return (
+    <>
+      <style>
+        {`
+          @page {
+            size: Letter portrait;
+            margin: 0;
+          }
 
+          @media print {
+            html,
+            body,
+            #root {
+              width: 8.5in;
+              height: 11in;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
 
-            <div
-                className="bg-white p-12 shadow-lg w-198.5 min-h-280.75 flex flex-col 
-                print:shadow-none print:w-full print:min-h-0 print:p-0 "
-            >
-                <header className="mb-8 border-b-2 pb-4 border-gray-500 flex justify-between items-end">
-                    <h2 className="text-3xl font-bold text-black">{pageName}</h2>
-                    <span className="italic text-black">Name: ______________________</span>
-                </header>
+            html,
+            body {
+              overflow: hidden;
+            }
 
-                <div className="grid grid-cols-2 gap-y-6">
-                    {puzzles.map((puzzle, index) => {
-                        const chessboardOptions = {
-                            position: puzzle,
-                            allowDragging: false,
-                            showNotation: false,
-                            squareStyles: squareStyles
-                        };
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+          }
+        `}
+      </style>
 
-                        return (
-                            <div
-                                key={index}
-                                className={`flex px-4 ${index % 2 === 0 ? 'justify-end' : 'justify-start'}`}
-                            >
-                                <div className="flex flex-col items-center gap-1">
-                                    <div className="w-57 border">
-                                        <Chessboard options={chessboardOptions} />
-                                    </div>
-                                    <h3 className="self-end mr-5">
-                                        {puzzle.split(" ")[1] === 'w' ?
-                                            hollowTriangle : filledTriangle}
-                                    </h3>
-                                </div>
-                            </div>
-                        );
-                    })}
+      <div
+        style={{
+          width: '8.5in',
+          height: '11in',
+          boxSizing: 'border-box',
+          padding: '0.42in 0.55in 0.3in',
+          backgroundColor: 'white',
+          color: 'black',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        {/* Header */}
+        <header
+          style={{
+            flexShrink: 0,
+            marginBottom: '0.22in',
+            paddingBottom: '0.11in',
+            borderBottom: '2px solid rgb(107, 114, 128)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end'
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '0.31in',
+              lineHeight: 1.1,
+              fontWeight: 700,
+              color: 'black'
+            }}
+          >
+            {pageName}
+          </h2>
+
+          <span
+            style={{
+              fontSize: '0.16in',
+              fontStyle: 'italic',
+              color: 'black'
+            }}
+          >
+            Name: ______________________
+          </span>
+        </header>
+
+        {/* Six puzzles */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            columnGap: '0.1in',
+            rowGap: '0.2in',
+            flexShrink: 0
+          }}
+        >
+          {puzzles.map((puzzle, index) => {
+            const chessboardOptions = {
+              position: puzzle,
+              allowDragging: false,
+              showNotation: false,
+              squareStyles
+            };
+
+            return (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  justifyContent:
+                    index % 2 === 0
+                      ? 'flex-end'
+                      : 'flex-start',
+                  paddingLeft: '0.16in',
+                  paddingRight: '0.16in',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '2.375in',
+                      height: '2.375in',
+                      border: '1px solid black',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    <Chessboard options={chessboardOptions} />
+                  </div>
+
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '0.2in',
+                      marginTop: '0.03in',
+                      paddingRight: '0.18in',
+                      boxSizing: 'border-box',
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {puzzle.split(' ')[1] === 'w'
+                      ? hollowTriangle
+                      : filledTriangle}
+                  </div>
                 </div>
-
-                <footer className="mt-5 pt-4 text-center text-sm border-t text-gray-500">
-                    {pageNumber}
-                </footer>
-            </div>
-
+              </div>
+            );
+          })}
         </div>
-    );
+
+        {/* Footer stays at the bottom of the physical page */}
+        <footer
+          style={{
+            marginTop: 'auto',
+            paddingTop: '0.12in',
+            borderTop: '1px solid rgb(209, 213, 219)',
+            textAlign: 'center',
+            fontSize: '0.13in',
+            color: 'rgb(107, 114, 128)',
+            flexShrink: 0
+          }}
+        >
+          {pageNumber}
+        </footer>
+      </div>
+    </>
+  );
 }
